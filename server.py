@@ -1,4 +1,5 @@
 import re
+import os
 
 import tornado.ioloop
 import tornado.web
@@ -10,11 +11,13 @@ class MainHandler(tornado.web.RequestHandler):
     def post(self):
         self.add_header('Access-Control-Allow-Origin', '*')
         data = self.get_argument('canvas_url')
-        if data:
+        client_id = self.get_argument('client_id')
+        if data and client_id:
             imgstr = re.search(r'base64,(.*)', data).group(1)
-            output = open('output.png', 'wb')
-            output.write(imgstr.decode('base64'))
-            output.close()
+            file_location = os.path.join('output', client_id + '.png')
+
+            with open(file_location, 'wb') as f:
+                f.write(imgstr.decode('base64'))
 
 
 application = tornado.web.Application([
