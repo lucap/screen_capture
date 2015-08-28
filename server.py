@@ -1,12 +1,15 @@
 import re
 import os
+import glob
 
 import tornado.ioloop
 import tornado.web
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
-        self.write("Hello, world")
+        self.add_header('Access-Control-Allow-Origin', '*')
+        files = glob.glob('output/*.png')
+        self.write({'files': files})
 
     def post(self):
         self.add_header('Access-Control-Allow-Origin', '*')
